@@ -2,10 +2,79 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const DetailStyles = () => {
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap";
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
+    const style = document.createElement("style");
+    style.id = "dd-styles";
+    style.textContent = `
+      .dd-root { min-height: 100vh; font-family: 'Plus Jakarta Sans', sans-serif; background: #f8faf9; color: #0f1f18; }
+      .dd-header { background: white; border-bottom: 1px solid #e2ece7; box-shadow: 0 1px 20px rgba(6,78,59,0.06); position: sticky; top: 0; z-index: 100; }
+      .dd-header-inner { max-width: 1280px; margin: 0 auto; padding: 20px 32px 24px; }
+      .dd-back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 9px; background: transparent; border: 1.5px solid #e2ece7; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600; color: #6b7c74; cursor: pointer; transition: all 0.25s; margin-bottom: 18px; }
+      .dd-back-btn:hover { border-color: #059669; color: #059669; background: rgba(16,185,129,0.04); }
+      .dd-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+      .dd-header-h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem,3.5vw,2.8rem); font-weight: 800; color: #0f1f18; letter-spacing: -0.02em; margin-bottom: 10px; }
+      .dd-system-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 18px; border-radius: 999px; background: rgba(16,185,129,0.07); border: 1.5px solid rgba(16,185,129,0.20); font-size: 13px; font-weight: 600; color: #059669; }
+      .dd-delete-btn { display: flex; align-items: center; gap: 8px; padding: 11px 22px; border-radius: 10px; background: linear-gradient(135deg,#ef4444,#f87171); color: white; border: none; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600; box-shadow: 0 4px 14px rgba(239,68,68,0.22); transition: all 0.25s; flex-shrink: 0; }
+      .dd-delete-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(239,68,68,0.30); }
+      .dd-content { max-width: 1280px; margin: 0 auto; padding: 32px 32px 72px; }
+      .dd-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+      .dd-stat-card { background: white; border-radius: 16px; padding: 22px 24px; border: 1px solid #e2ece7; box-shadow: 0 4px 18px rgba(6,78,59,0.05); display: flex; align-items: center; gap: 16px; transition: all 0.3s; }
+      .dd-stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(6,78,59,0.10); }
+      .dd-stat-ico { width: 48px; height: 48px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+      .dd-stat-label { font-size: 12px; color: #6b7c74; font-weight: 500; margin-bottom: 2px; }
+      .dd-stat-val { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: #0f1f18; line-height: 1; text-transform: capitalize; }
+      .dd-verified-card { background: linear-gradient(135deg,#064e3b,#059669); border-radius: 16px; padding: 22px 24px; box-shadow: 0 8px 24px rgba(6,78,59,0.22); display: flex; align-items: center; gap: 16px; }
+      .dd-verified-ico { width: 48px; height: 48px; border-radius: 13px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+      .dd-verified-label { font-size: 12px; color: rgba(255,255,255,0.65); font-weight: 500; margin-bottom: 2px; }
+      .dd-verified-val   { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: white; }
+      .dd-tabs-wrap { background: white; border-radius: 16px 16px 0 0; border: 1px solid #e2ece7; border-bottom: none; overflow: hidden; }
+      .dd-tabs { display: flex; overflow-x: auto; }
+      .dd-tab { padding: 16px 26px; font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 2.5px solid transparent; color: #6b7c74; background: none; border-top: none; border-left: none; border-right: none; font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s; white-space: nowrap; }
+      .dd-tab:hover { color: #0f1f18; }
+      .dd-tab.active { color: #059669; background: rgba(16,185,129,0.04); }
+      .dd-tab-content { background: white; border-radius: 0 0 16px 16px; border: 1px solid #e2ece7; border-top: none; padding: 32px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(6,78,59,0.04); }
+      .dd-section { border-left: 3px solid; padding-left: 22px; padding-top: 4px; padding-bottom: 4px; margin-bottom: 24px; }
+      .dd-section:last-child { margin-bottom: 0; }
+      .dd-section-h3 { display: flex; align-items: center; gap: 9px; font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: #0f1f18; margin-bottom: 10px; }
+      .dd-section-p { font-size: 15px; color: #4b5563; line-height: 1.8; white-space: pre-line; }
+      .dd-disclaimer { background: rgba(249,115,22,0.05); border-left: 4px solid #f97316; border-radius: 0 14px 14px 0; padding: 22px 24px; display: flex; align-items: flex-start; gap: 14px; }
+      .dd-disclaimer-ico { width: 42px; height: 42px; border-radius: 11px; background: rgba(249,115,22,0.10); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+      .dd-disclaimer-h4 { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: #0f1f18; margin-bottom: 6px; }
+      .dd-disclaimer-p  { font-size: 13px; color: #4b5563; line-height: 1.7; }
+      .dd-center { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #f8faf9; font-family: 'Plus Jakarta Sans', sans-serif; }
+      .dd-spin { width: 48px; height: 48px; border-radius: 50%; border: 3px solid rgba(16,185,129,0.15); border-top-color: #059669; animation: ddSpin 0.8s linear infinite; margin: 0 auto 16px; }
+      @keyframes ddSpin { to { transform: rotate(360deg); } }
+      .dd-not-found { text-align: center; padding: 40px; background: white; border-radius: 20px; border: 1px solid #e2ece7; box-shadow: 0 8px 32px rgba(6,78,59,0.06); max-width: 400px; width: 90%; }
+      .dd-not-found-ico { width: 72px; height: 72px; border-radius: 50%; background: rgba(239,68,68,0.08); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+      .dd-not-found h2 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #0f1f18; margin-bottom: 8px; }
+      .dd-not-found p  { font-size: 14px; color: #6b7c74; margin-bottom: 20px; }
+      .dd-not-found-btn { padding: 11px 28px; border-radius: 10px; background: linear-gradient(135deg,#064e3b,#059669); color: white; border: none; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600; box-shadow: 0 4px 14px rgba(6,78,59,0.22); transition: all 0.25s; }
+      .dd-not-found-btn:hover { transform: translateY(-2px); }
+      @media (max-width: 768px) {
+        .dd-content { padding: 24px 16px 60px; }
+        .dd-header-inner { padding: 16px 20px 20px; }
+        .dd-stats { grid-template-columns: 1fr; }
+        .dd-tab-content { padding: 22px 18px; }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(link);
+      const s = document.getElementById("dd-styles");
+      if (s) document.head.removeChild(s);
+    };
+  }, []);
+  return null;
+};
+
 const DiseaseDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const [disease, setDisease] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
@@ -18,11 +87,7 @@ const DiseaseDetail = () => {
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/diseases/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
+          { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
         );
         setDisease(res.data);
       } catch (error) {
@@ -31,21 +96,15 @@ const DiseaseDetail = () => {
         setLoading(false);
       }
     };
-
     fetchDisease();
   }, [id]);
 
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this disease? This action cannot be undone.")) return;
-
     try {
       await axios.delete(
         `${import.meta.env.VITE_API_URL}/api/diseases/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
       alert("Disease deleted successfully");
       navigate(-1);
@@ -56,10 +115,11 @@ const DiseaseDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-cyan-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Loading disease information...</p>
+      <div className="dd-center">
+        <DetailStyles />
+        <div style={{ textAlign: "center" }}>
+          <div className="dd-spin" />
+          <p style={{ fontSize: 14, color: "#6b7c74", fontWeight: 500, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Loading disease information...</p>
         </div>
       </div>
     );
@@ -67,218 +127,134 @@ const DiseaseDetail = () => {
 
   if (!disease) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+      <div className="dd-center">
+        <DetailStyles />
+        <div className="dd-not-found">
+          <div className="dd-not-found-ico">
+            <svg width="32" height="32" fill="none" stroke="#ef4444" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Disease Not Found</h2>
-          <p className="text-gray-600 mb-6">The disease you're looking for doesn't exist.</p>
-          <button
-            onClick={() => navigate(-1)}
-            className="px-6 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition"
-          >
-            Go Back
-          </button>
+          <h2>Disease Not Found</h2>
+          <p>The disease you're looking for doesn't exist.</p>
+          <button className="dd-not-found-btn" onClick={() => navigate(-1)}>Go Back</button>
         </div>
       </div>
     );
   }
 
   const sections = [
-    { key: "description", icon: "📋", label: "Description", value: disease.description },
-    { key: "etiology", icon: "🔬", label: "Etiology", value: disease.etiology },
-    { key: "pathophysiology", icon: "🧬", label: "Pathophysiology", value: disease.pathophysiology },
+    { key: "description",      icon: "📋", label: "Description",       value: disease.description },
+    { key: "etiology",         icon: "🔬", label: "Etiology",          value: disease.etiology },
+    { key: "pathophysiology",  icon: "🧬", label: "Pathophysiology",   value: disease.pathophysiology },
     { key: "clinicalFeatures", icon: "🩺", label: "Clinical Features", value: disease.clinicalFeatures },
-    { key: "diagnosis", icon: "🔍", label: "Diagnosis", value: disease.diagnosis },
-    { key: "treatment", icon: "💊", label: "Treatment", value: disease.treatment },
-    { key: "complications", icon: "⚠️", label: "Complications", value: disease.complications },
-    { key: "prognosis", icon: "📊", label: "Prognosis", value: disease.prognosis },
-  ].filter(section => section.value);
+    { key: "diagnosis",        icon: "🔍", label: "Diagnosis",         value: disease.diagnosis },
+    { key: "treatment",        icon: "💊", label: "Treatment",         value: disease.treatment },
+    { key: "complications",    icon: "⚠️", label: "Complications",     value: disease.complications },
+    { key: "prognosis",        icon: "📊", label: "Prognosis",         value: disease.prognosis },
+  ].filter(s => s.value);
+
+  const SECTION_COLORS = {
+    description: "#059669", etiology: "#3b82f6",
+    pathophysiology: "#7c3aed", clinicalFeatures: "#f97316",
+    diagnosis: "#06b6d4", treatment: "#22c55e",
+    complications: "#ef4444", prognosis: "#6366f1",
+  };
+
+  const TAB_KEYS = {
+    overview: ["description", "etiology"],
+    medical:  ["pathophysiology", "clinicalFeatures", "diagnosis"],
+    clinical: ["treatment", "complications", "prognosis"],
+  };
+  const TAB_COLORS = { overview: "#059669", medical: "#7c3aed", clinical: "#f97316" };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50">
-      {/* Header */}
-      <div className="bg-white shadow-md border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-cyan-600 hover:text-cyan-700 font-semibold mb-4 transition group"
-          >
-            <svg className="w-5 h-5 group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
+    <div className="dd-root">
+      <DetailStyles />
+
+      <div className="dd-header">
+        <div className="dd-header-inner">
+          <button className="dd-back-btn" onClick={() => navigate(-1)}>
+            <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
             Back to Dashboard
           </button>
-
-          <div className="flex items-start justify-between">
+          <div className="dd-header-row">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">{disease.name}</h1>
-              <div className="flex items-center gap-4">
-                <span className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-100 text-cyan-700 rounded-full text-sm font-semibold">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
-                  {disease.organSystem}
-                </span>
-              </div>
+              <h1 className="dd-header-h1">{disease.name}</h1>
+              <span className="dd-system-badge">
+                <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                {disease.organSystem}
+              </span>
             </div>
-
             {isAdmin && (
-              <div className="flex gap-3">
-                <button
-                  onClick={handleDelete}
-                  className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition shadow-md"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                  Delete Disease
-                </button>
-              </div>
+              <button className="dd-delete-btn" onClick={handleDelete}>
+                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                Delete Disease
+              </button>
             )}
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Quick Stats */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-2xl">
-                📚
-              </div>
-              <div>
-                <p className="text-gray-600 text-sm">Information Sections</p>
-                <p className="text-2xl font-bold text-gray-900">{sections.length}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center text-2xl">
-                🏥
-              </div>
-              <div>
-                <p className="text-gray-600 text-sm">System Category</p>
-                <p className="text-lg font-bold text-gray-900 capitalize">{disease.organSystem}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-cyan-500 to-teal-500 rounded-xl p-6 shadow-lg text-white">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center text-2xl">
-                ✅
-              </div>
-              <div>
-                <p className="text-cyan-50 text-sm">Status</p>
-                <p className="text-lg font-bold">Verified Info</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Tab Navigation */}
-        <div className="bg-white rounded-t-2xl shadow-md border-b border-gray-200">
-          <div className="flex overflow-x-auto">
-            <button
-              onClick={() => setActiveTab("overview")}
-              className={`px-6 py-4 font-semibold transition border-b-2 whitespace-nowrap ${
-                activeTab === "overview"
-                  ? "border-cyan-600 text-cyan-600"
-                  : "border-transparent text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              📋 Overview
-            </button>
-            <button
-              onClick={() => setActiveTab("medical")}
-              className={`px-6 py-4 font-semibold transition border-b-2 whitespace-nowrap ${
-                activeTab === "medical"
-                  ? "border-cyan-600 text-cyan-600"
-                  : "border-transparent text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              🔬 Medical Details
-            </button>
-            <button
-              onClick={() => setActiveTab("clinical")}
-              className={`px-6 py-4 font-semibold transition border-b-2 whitespace-nowrap ${
-                activeTab === "clinical"
-                  ? "border-cyan-600 text-cyan-600"
-                  : "border-transparent text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              💊 Treatment & Care
-            </button>
-          </div>
-        </div>
-
-        {/* Content Area */}
-        <div className="bg-white rounded-b-2xl shadow-md p-8">
-          {activeTab === "overview" && (
-            <div className="space-y-6">
-              {sections.filter(s => ["description", "etiology"].includes(s.key)).map((section) => (
-                <div key={section.key} className="border-l-4 border-cyan-500 pl-6 py-2">
-                  <h3 className="flex items-center gap-2 text-xl font-bold text-gray-900 mb-3">
-                    <span className="text-2xl">{section.icon}</span>
-                    {section.label}
-                  </h3>
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-line">{section.value}</p>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {activeTab === "medical" && (
-            <div className="space-y-6">
-              {sections.filter(s => ["pathophysiology", "clinicalFeatures", "diagnosis"].includes(s.key)).map((section) => (
-                <div key={section.key} className="border-l-4 border-purple-500 pl-6 py-2">
-                  <h3 className="flex items-center gap-2 text-xl font-bold text-gray-900 mb-3">
-                    <span className="text-2xl">{section.icon}</span>
-                    {section.label}
-                  </h3>
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-line">{section.value}</p>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {activeTab === "clinical" && (
-            <div className="space-y-6">
-              {sections.filter(s => ["treatment", "complications", "prognosis"].includes(s.key)).map((section) => (
-                <div key={section.key} className="border-l-4 border-teal-500 pl-6 py-2">
-                  <h3 className="flex items-center gap-2 text-xl font-bold text-gray-900 mb-3">
-                    <span className="text-2xl">{section.icon}</span>
-                    {section.label}
-                  </h3>
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-line">{section.value}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Important Notice */}
-        <div className="mt-8 bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-500 rounded-lg p-6 shadow-md">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
-              <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            </div>
+      <div className="dd-content">
+        <div className="dd-stats">
+          <div className="dd-stat-card">
+            <div className="dd-stat-ico" style={{ background: "rgba(16,185,129,0.08)" }}>📚</div>
             <div>
-              <h4 className="text-lg font-bold text-gray-900 mb-2">Medical Disclaimer</h4>
-              <p className="text-gray-700 text-sm leading-relaxed">
-                This information is for educational purposes only and should not be used as a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.
-              </p>
+              <div className="dd-stat-label">Information Sections</div>
+              <div className="dd-stat-val" style={{ fontSize: "2rem" }}>{sections.length}</div>
             </div>
+          </div>
+          <div className="dd-stat-card">
+            <div className="dd-stat-ico" style={{ background: "rgba(249,115,22,0.08)" }}>🏥</div>
+            <div>
+              <div className="dd-stat-label">System Category</div>
+              <div className="dd-stat-val" style={{ fontSize: "1.1rem" }}>{disease.organSystem}</div>
+            </div>
+          </div>
+          <div className="dd-verified-card">
+            <div className="dd-verified-ico">✅</div>
+            <div>
+              <div className="dd-verified-label">Status</div>
+              <div className="dd-verified-val">Verified Info</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="dd-tabs-wrap">
+          <div className="dd-tabs">
+            {[
+              { key: "overview", label: "📋 Overview" },
+              { key: "medical",  label: "🔬 Medical Details" },
+              { key: "clinical", label: "💊 Treatment & Care" },
+            ].map(({ key, label }) => (
+              <button
+                key={key}
+                className={`dd-tab${activeTab === key ? " active" : ""}`}
+                style={activeTab === key ? { borderBottom: `2.5px solid ${TAB_COLORS[key]}`, color: TAB_COLORS[key] } : {}}
+                onClick={() => setActiveTab(key)}
+              >{label}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="dd-tab-content">
+          {sections.filter(s => TAB_KEYS[activeTab].includes(s.key)).map(section => (
+            <div key={section.key} className="dd-section" style={{ borderLeftColor: SECTION_COLORS[section.key] }}>
+              <h3 className="dd-section-h3"><span style={{ fontSize: 20 }}>{section.icon}</span>{section.label}</h3>
+              <p className="dd-section-p">{section.value}</p>
+            </div>
+          ))}
+          {sections.filter(s => TAB_KEYS[activeTab].includes(s.key)).length === 0 && (
+            <p style={{ color: "#9cad9c", fontSize: 14, textAlign: "center", padding: "24px 0" }}>No information available for this section.</p>
+          )}
+        </div>
+
+        <div className="dd-disclaimer">
+          <div className="dd-disclaimer-ico">
+            <svg width="20" height="20" fill="none" stroke="#f97316" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          </div>
+          <div>
+            <div className="dd-disclaimer-h4">Medical Disclaimer</div>
+            <p className="dd-disclaimer-p">This information is for educational purposes only and should not be used as a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.</p>
           </div>
         </div>
       </div>

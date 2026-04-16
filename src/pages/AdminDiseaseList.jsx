@@ -2,6 +2,132 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const AdminListStyles = () => {
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap";
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
+    const style = document.createElement("style");
+    style.id = "adl-styles";
+    style.textContent = `
+      .adl-root { min-height: 100vh; font-family: 'Plus Jakarta Sans', sans-serif; background: #f8faf9; color: #0f1f18; }
+      .adl-header { background: white; border-bottom: 1px solid #e2ece7; box-shadow: 0 1px 20px rgba(6,78,59,0.06); position: sticky; top: 0; z-index: 100; }
+      .adl-header-inner { max-width: 1280px; margin: 0 auto; padding: 20px 32px 24px; }
+      .adl-back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 9px; background: transparent; border: 1.5px solid #e2ece7; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600; color: #6b7c74; cursor: pointer; transition: all 0.25s; margin-bottom: 18px; }
+      .adl-back-btn:hover { border-color: #059669; color: #059669; background: rgba(16,185,129,0.04); }
+      .adl-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+      .adl-header-h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem,3.5vw,2.6rem); font-weight: 800; color: #0f1f18; letter-spacing: -0.02em; margin-bottom: 6px; text-transform: capitalize; }
+      .adl-header-sub { font-size: 14px; color: #6b7c74; }
+      .adl-count-badge { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 14px; background: rgba(16,185,129,0.06); border: 1.5px solid rgba(16,185,129,0.18); flex-shrink: 0; }
+      .adl-count-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: #059669; line-height: 1; }
+      .adl-count-label { font-size: 12px; color: #6b7c74; font-weight: 500; }
+      .adl-content { max-width: 1280px; margin: 0 auto; padding: 32px 32px 72px; }
+      .adl-search-wrap { background: white; border-radius: 14px; padding: 16px 20px; margin-bottom: 20px; border: 1px solid #e2ece7; box-shadow: 0 4px 16px rgba(6,78,59,0.04); position: relative; }
+      .adl-search-icon { position: absolute; left: 34px; top: 50%; transform: translateY(-50%); color: #9cad9c; pointer-events: none; }
+      .adl-search-input { width: 100%; padding: 12px 16px 12px 46px; border: 1.5px solid #e2ece7; border-radius: 11px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; color: #0f1f18; background: #f8faf9; outline: none; transition: all 0.25s; }
+      .adl-search-input::placeholder { color: #9cad9c; }
+      .adl-search-input:focus { border-color: #059669; background: white; box-shadow: 0 0 0 4px rgba(16,185,129,0.10); }
+      .adl-empty { background: white; border-radius: 18px; padding: 56px 20px; text-align: center; border: 1px solid #e2ece7; box-shadow: 0 4px 20px rgba(6,78,59,0.05); }
+      .adl-empty-ico { width: 72px; height: 72px; border-radius: 50%; background: rgba(16,185,129,0.07); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+      .adl-empty-h3 { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; color: #0f1f18; margin-bottom: 6px; }
+      .adl-empty-p { font-size: 14px; color: #6b7c74; margin-bottom: 20px; }
+      .adl-add-btn { padding: 11px 28px; border-radius: 10px; background: linear-gradient(135deg,#064e3b,#059669); color: white; border: none; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600; box-shadow: 0 4px 14px rgba(6,78,59,0.22); transition: all 0.25s; }
+      .adl-add-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(6,78,59,0.30); }
+      .adl-list { display: flex; flex-direction: column; gap: 14px; }
+      .adl-disease-card { background: white; border-radius: 16px; border: 1.5px solid #e2ece7; overflow: hidden; box-shadow: 0 2px 12px rgba(6,78,59,0.04); transition: box-shadow 0.3s; }
+      .adl-disease-card:hover { box-shadow: 0 12px 36px rgba(6,78,59,0.09); }
+      .adl-card-head { padding: 22px 24px; cursor: pointer; transition: background 0.2s; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+      .adl-card-head:hover { background: rgba(16,185,129,0.03); }
+      .adl-card-left { flex: 1; }
+      .adl-card-title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+      .adl-card-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: #0f1f18; transition: color 0.2s; }
+      .adl-card-head:hover .adl-card-title { color: #059669; }
+      .adl-card-desc { font-size: 13px; color: #6b7c74; line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      .adl-card-actions { display: flex; gap: 8px; flex-shrink: 0; }
+      .adl-edit-btn { display: flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 9px; background: linear-gradient(135deg,#f59e0b,#fbbf24); color: white; border: none; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 600; box-shadow: 0 3px 10px rgba(245,158,11,0.22); transition: all 0.25s; }
+      .adl-edit-btn:hover { transform: translateY(-2px); box-shadow: 0 7px 18px rgba(245,158,11,0.30); }
+      .adl-del-btn  { display: flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 9px; background: linear-gradient(135deg,#ef4444,#f87171); color: white; border: none; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 600; box-shadow: 0 3px 10px rgba(239,68,68,0.20); transition: all 0.25s; }
+      .adl-del-btn:hover { transform: translateY(-2px); box-shadow: 0 7px 18px rgba(239,68,68,0.30); }
+      .adl-chevron { width: 30px; height: 30px; border-radius: 8px; background: rgba(16,185,129,0.07); border: 1px solid rgba(16,185,129,0.14); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+      .adl-expanded { border-top: 1.5px solid #e2ece7; background: #f8faf9; padding: 28px 24px; }
+      .adl-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .adl-detail-item { border-radius: 12px; padding: 16px 18px; border-left: 3px solid; }
+      .adl-detail-h3 { font-size: 13px; font-weight: 700; color: #0f1f18; margin-bottom: 7px; display: flex; align-items: center; gap: 7px; }
+      .adl-detail-p  { font-size: 13px; color: #4b5563; line-height: 1.65; white-space: pre-line; }
+      .adl-loader { display: flex; flex-direction: column; align-items: center; padding: 64px 20px; }
+      .adl-spin { width: 44px; height: 44px; border-radius: 50%; border: 3px solid rgba(16,185,129,0.15); border-top-color: #059669; animation: adlSpin 0.8s linear infinite; margin-bottom: 16px; }
+      @keyframes adlSpin { to { transform: rotate(360deg); } }
+
+      /* MODAL */
+      .adl-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
+      .adl-modal { background: white; border-radius: 22px; width: 100%; max-width: 860px; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 40px 80px rgba(0,0,0,0.20); animation: adlModalIn 0.35s cubic-bezier(0.23,1,0.32,1); }
+      @keyframes adlModalIn { from { opacity:0; transform: scale(0.95) translateY(16px); } to { opacity:1; transform: scale(1) translateY(0); } }
+      .adl-modal-header { background: linear-gradient(135deg,#064e3b,#065f46); padding: 22px 28px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+      .adl-modal-header-left { display: flex; align-items: center; gap: 12px; }
+      .adl-modal-header-ico { width: 38px; height: 38px; border-radius: 10px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; }
+      .adl-modal-h2 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: white; }
+      .adl-modal-close { width: 36px; height: 36px; border-radius: 9px; background: rgba(255,255,255,0.12); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+      .adl-modal-close:hover { background: rgba(255,255,255,0.22); }
+      .adl-modal-body { overflow-y: auto; flex: 1; padding: 28px; }
+      .adl-modal-field { margin-bottom: 18px; }
+      .adl-modal-label { display: block; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 600; color: #0f1f18; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 7px; }
+      .adl-modal-req { color: #ef4444; margin-left: 2px; }
+      .adl-modal-input, .adl-modal-textarea { width: 100%; padding: 12px 16px; border: 1.5px solid #e2ece7; border-radius: 11px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; color: #0f1f18; background: #f8faf9; outline: none; transition: all 0.25s; }
+      .adl-modal-input::placeholder, .adl-modal-textarea::placeholder { color: #9cad9c; }
+      .adl-modal-input:focus, .adl-modal-textarea:focus { border-color: #059669; background: white; box-shadow: 0 0 0 4px rgba(16,185,129,0.10); }
+      .adl-modal-textarea { resize: none; }
+      .adl-modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+      .adl-modal-footer { background: #f8faf9; border-top: 1px solid #e2ece7; padding: 18px 28px; display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-shrink: 0; }
+      .adl-modal-cancel { padding: 11px 24px; border-radius: 10px; border: 1.5px solid #e2ece7; background: white; color: #6b7c74; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+      .adl-modal-cancel:hover { border-color: #9cad9c; color: #0f1f18; }
+      .adl-modal-cancel:disabled { opacity: 0.5; }
+      .adl-modal-submit { padding: 11px 28px; border-radius: 10px; background: linear-gradient(135deg,#064e3b,#065f46); color: white; border: none; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 700; box-shadow: 0 4px 14px rgba(6,78,59,0.22); transition: all 0.25s; display: flex; align-items: center; gap: 8px; }
+      .adl-modal-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(6,78,59,0.30); }
+      .adl-modal-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+      @keyframes adlModalSpin { to { transform: rotate(360deg); } }
+      .adl-modal-spinner { width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; animation: adlModalSpin 0.7s linear infinite; }
+
+      @media (max-width: 768px) {
+        .adl-content { padding: 24px 16px 60px; }
+        .adl-header-inner { padding: 16px 20px 20px; }
+        .adl-detail-grid { grid-template-columns: 1fr; }
+        .adl-modal-grid { grid-template-columns: 1fr; }
+        .adl-card-actions { flex-direction: column; }
+        .adl-count-badge { display: none; }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(link);
+      const s = document.getElementById("adl-styles");
+      if (s) document.head.removeChild(s);
+    };
+  }, []);
+  return null;
+};
+
+const DETAIL_COLORS = {
+  blue:   { bg: "rgba(59,130,246,0.05)",  border: "#3b82f6" },
+  purple: { bg: "rgba(124,58,237,0.05)",  border: "#7c3aed" },
+  pink:   { bg: "rgba(236,72,153,0.05)",  border: "#ec4899" },
+  teal:   { bg: "rgba(16,185,129,0.05)",  border: "#059669" },
+  cyan:   { bg: "rgba(6,182,212,0.05)",   border: "#06b6d4" },
+  green:  { bg: "rgba(34,197,94,0.05)",   border: "#22c55e" },
+  orange: { bg: "rgba(249,115,22,0.05)",  border: "#f97316" },
+  indigo: { bg: "rgba(99,102,241,0.05)",  border: "#6366f1" },
+};
+
+const Section = ({ icon, title, value, color }) => {
+  const c = DETAIL_COLORS[color] || DETAIL_COLORS.teal;
+  return (
+    <div className="adl-detail-item" style={{ background: c.bg, borderLeftColor: c.border }}>
+      <div className="adl-detail-h3"><span style={{ fontSize: 16 }}>{icon}</span>{title}</div>
+      <p className="adl-detail-p">{value || "No information available"}</p>
+    </div>
+  );
+};
+
 const AdminDiseaseList = () => {
   const { organ } = useParams();
   const navigate = useNavigate();
@@ -10,20 +136,13 @@ const AdminDiseaseList = () => {
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  
+
   // ✅ NEW: Edit Modal State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingDisease, setEditingDisease] = useState(null);
   const [editFormData, setEditFormData] = useState({
-    name: "",
-    description: "",
-    etiology: "",
-    pathophysiology: "",
-    clinicalFeatures: "",
-    diagnosis: "",
-    treatment: "",
-    complications: "",
-    prognosis: "",
+    name: "", description: "", etiology: "", pathophysiology: "",
+    clinicalFeatures: "", diagnosis: "", treatment: "", complications: "", prognosis: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -33,11 +152,7 @@ const AdminDiseaseList = () => {
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/diseases/organ/${organ}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
+          { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
         );
         setDiseases(res.data);
       } catch (error) {
@@ -46,21 +161,16 @@ const AdminDiseaseList = () => {
         setLoading(false);
       }
     };
-
     fetchDiseases();
   }, [organ]);
 
   /* ================= DELETE DISEASE ================= */
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this disease? This action cannot be undone.")) return;
-
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/api/diseases/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-
       setDiseases((prev) => prev.filter((d) => d._id !== id));
       alert("Disease deleted successfully");
     } catch (error) {
@@ -72,14 +182,10 @@ const AdminDiseaseList = () => {
   const handleEditClick = (disease) => {
     setEditingDisease(disease);
     setEditFormData({
-      name: disease.name || "",
-      description: disease.description || "",
-      etiology: disease.etiology || "",
-      pathophysiology: disease.pathophysiology || "",
-      clinicalFeatures: disease.clinicalFeatures || "",
-      diagnosis: disease.diagnosis || "",
-      treatment: disease.treatment || "",
-      complications: disease.complications || "",
+      name: disease.name || "", description: disease.description || "",
+      etiology: disease.etiology || "", pathophysiology: disease.pathophysiology || "",
+      clinicalFeatures: disease.clinicalFeatures || "", diagnosis: disease.diagnosis || "",
+      treatment: disease.treatment || "", complications: disease.complications || "",
       prognosis: disease.prognosis || "",
     });
     setIsEditModalOpen(true);
@@ -89,49 +195,26 @@ const AdminDiseaseList = () => {
   const handleCloseModal = () => {
     setIsEditModalOpen(false);
     setEditingDisease(null);
-    setEditFormData({
-      name: "",
-      description: "",
-      etiology: "",
-      pathophysiology: "",
-      clinicalFeatures: "",
-      diagnosis: "",
-      treatment: "",
-      complications: "",
-      prognosis: "",
-    });
+    setEditFormData({ name:"",description:"",etiology:"",pathophysiology:"",clinicalFeatures:"",diagnosis:"",treatment:"",complications:"",prognosis:"" });
   };
 
   /* ================= ✅ NEW: HANDLE INPUT CHANGE ================= */
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEditFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setEditFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   /* ================= ✅ NEW: SUBMIT EDIT ================= */
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
     try {
       const res = await axios.put(
         `${import.meta.env.VITE_API_URL}/api/diseases/${editingDisease._id}`,
         editFormData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
-
-      // Update the disease in the list
-      setDiseases((prev) =>
-        prev.map((d) => (d._id === editingDisease._id ? res.data : d))
-      );
-
+      setDiseases((prev) => prev.map((d) => (d._id === editingDisease._id ? res.data : d)));
       alert("Disease updated successfully!");
       handleCloseModal();
     } catch (error) {
@@ -141,176 +224,108 @@ const AdminDiseaseList = () => {
     }
   };
 
-  const toggleExpand = (id) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
-
-  // Filter diseases based on search
-  const filteredDiseases = diseases.filter((disease) =>
-    disease.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const toggleExpand = (id) => setExpandedId(expandedId === id ? null : id);
+  const filteredDiseases = diseases.filter((d) => d.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Loading diseases...</p>
-        </div>
+      <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"#f8faf9", fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
+        <AdminListStyles />
+        <div className="adl-loader"><div className="adl-spin" /><span style={{ fontSize:14, color:"#6b7c74", fontWeight:500 }}>Loading diseases...</span></div>
       </div>
     );
   }
 
+  const FIELDS = [
+    { name: "etiology", label: "Etiology", placeholder: "Causes and origin" },
+    { name: "pathophysiology", label: "Pathophysiology", placeholder: "Disease mechanism" },
+    { name: "clinicalFeatures", label: "Clinical Features", placeholder: "Signs and symptoms" },
+    { name: "diagnosis", label: "Diagnosis", placeholder: "Diagnostic methods" },
+    { name: "treatment", label: "Treatment", placeholder: "Treatment options" },
+    { name: "complications", label: "Complications", placeholder: "Potential complications" },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-      {/* Header Section */}
-      <div className="bg-white shadow-md border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <button
-            onClick={() => navigate("/admin")}
-            className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-semibold mb-4 transition group"
-          >
-            <svg className="w-5 h-5 group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
+    <div className="adl-root">
+      <AdminListStyles />
+
+      {/* HEADER */}
+      <div className="adl-header">
+        <div className="adl-header-inner">
+          <button className="adl-back-btn" onClick={() => navigate("/admin")}>
+            <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
             Back to Dashboard
           </button>
-
-          <div className="flex items-center justify-between">
+          <div className="adl-header-row">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2 capitalize">
-                {organ} Diseases
-              </h1>
-              <p className="text-gray-600">
-                Manage and edit diseases in the {organ} system
-              </p>
+              <h1 className="adl-header-h1">{organ} Diseases</h1>
+              <p className="adl-header-sub">Manage and edit diseases in the {organ} system</p>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-indigo-100 rounded-lg">
-              <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <span className="font-bold text-2xl text-indigo-600">{diseases.length}</span>
-              <span className="text-gray-600 text-sm">Total</span>
+            <div className="adl-count-badge">
+              <div>
+                <div className="adl-count-num">{diseases.length}</div>
+                <div className="adl-count-label">Total</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search Bar */}
-        <div className="bg-white rounded-xl shadow-md p-4 mb-6 border border-gray-100">
-          <div className="relative">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            <input
-              type="text"
-              placeholder="Search diseases by name..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-            />
-          </div>
+      {/* CONTENT */}
+      <div className="adl-content">
+        <div className="adl-search-wrap">
+          <span className="adl-search-icon">
+            <svg width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </span>
+          <input type="text" placeholder="Search diseases by name..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="adl-search-input" />
         </div>
 
-        {/* Disease List */}
         {filteredDiseases.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-md p-12 text-center border border-gray-100">
-            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No Diseases Found</h3>
-            <p className="text-gray-600 mb-6">
-              {searchQuery ? "Try adjusting your search" : "No diseases have been added to this system yet"}
-            </p>
-            {!searchQuery && (
-              <button
-                onClick={() => navigate("/admin")}
-                className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-              >
-                Add New Disease
-              </button>
-            )}
+          <div className="adl-empty">
+            <div className="adl-empty-ico"><svg width="28" height="28" fill="none" stroke="#059669" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+            <h3 className="adl-empty-h3">No Diseases Found</h3>
+            <p className="adl-empty-p">{searchQuery ? "Try adjusting your search" : "No diseases have been added to this system yet"}</p>
+            {!searchQuery && <button className="adl-add-btn" onClick={() => navigate("/admin")}>Add New Disease</button>}
           </div>
         ) : (
-          <div className="space-y-4">
-            {filteredDiseases.map((disease, index) => (
-              <div
-                key={disease._id}
-                className="bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-xl transition overflow-hidden"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                {/* ===== HEADER ===== */}
-                <div
-                  className="p-6 cursor-pointer hover:bg-gray-50 transition"
-                  onClick={() => toggleExpand(disease._id)}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h2 className="text-xl font-bold text-gray-900">{disease.name}</h2>
-                        {expandedId === disease._id ? (
-                          <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                          </svg>
-                        ) : (
-                          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        )}
+          <div className="adl-list">
+            {filteredDiseases.map((disease) => (
+              <div key={disease._id} className="adl-disease-card">
+                <div className="adl-card-head" onClick={() => toggleExpand(disease._id)}>
+                  <div className="adl-card-left">
+                    <div className="adl-card-title-row">
+                      <span className="adl-card-title">{disease.name}</span>
+                      <div className="adl-chevron">
+                        {expandedId === disease._id
+                          ? <svg width="13" height="13" fill="none" stroke="#059669" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7"/></svg>
+                          : <svg width="13" height="13" fill="none" stroke="#9cad9c" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                        }
                       </div>
-                      <p className="text-gray-600 leading-relaxed line-clamp-2">
-                        {disease.description || "No description available"}
-                      </p>
                     </div>
-
-                    <div className="flex gap-2">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditClick(disease);
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition shadow-md"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                        Edit
-                      </button>
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(disease._id);
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition shadow-md"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                        Delete
-                      </button>
-                    </div>
+                    <p className="adl-card-desc">{disease.description || "No description available"}</p>
+                  </div>
+                  <div className="adl-card-actions" onClick={(e) => e.stopPropagation()}>
+                    <button className="adl-edit-btn" onClick={() => handleEditClick(disease)}>
+                      <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                      Edit
+                    </button>
+                    <button className="adl-del-btn" onClick={() => handleDelete(disease._id)}>
+                      <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                      Delete
+                    </button>
                   </div>
                 </div>
-
-                {/* ===== EXPANDED MEDICAL DETAILS ===== */}
                 {expandedId === disease._id && (
-                  <div className="border-t border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <Section icon="📋" title="Overview" value={disease.description} color="blue" />
-                      <Section icon="🔬" title="Etiology" value={disease.etiology} color="purple" />
-                      <Section icon="🧬" title="Pathophysiology" value={disease.pathophysiology} color="pink" />
-                      <Section icon="🩺" title="Clinical Features" value={disease.clinicalFeatures} color="teal" />
-                      <Section icon="🔍" title="Diagnosis" value={disease.diagnosis} color="cyan" />
-                      <Section icon="💊" title="Treatment" value={disease.treatment} color="green" />
-                      <Section icon="⚠️" title="Complications" value={disease.complications} color="orange" />
-                      <Section icon="📊" title="Prognosis" value={disease.prognosis} color="indigo" />
+                  <div className="adl-expanded">
+                    <div className="adl-detail-grid">
+                      <Section icon="📋" title="Overview"          value={disease.description}     color="blue"   />
+                      <Section icon="🔬" title="Etiology"          value={disease.etiology}        color="purple" />
+                      <Section icon="🧬" title="Pathophysiology"   value={disease.pathophysiology} color="pink"   />
+                      <Section icon="🩺" title="Clinical Features" value={disease.clinicalFeatures} color="teal"  />
+                      <Section icon="🔍" title="Diagnosis"         value={disease.diagnosis}       color="cyan"   />
+                      <Section icon="💊" title="Treatment"         value={disease.treatment}       color="green"  />
+                      <Section icon="⚠️" title="Complications"     value={disease.complications}   color="orange" />
+                      <Section icon="📊" title="Prognosis"         value={disease.prognosis}       color="indigo" />
                     </div>
                   </div>
                 )}
@@ -322,243 +337,56 @@ const AdminDiseaseList = () => {
 
       {/* ================= ✅ NEW: EDIT MODAL ================= */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
-            onClick={handleCloseModal}
-          ></div>
-
-          {/* Modal */}
-          <div className="flex min-h-full items-center justify-center p-4">
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
-              {/* Modal Header */}
-              <div className="sticky top-0 bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 flex items-center justify-between z-10">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                  </div>
-                  <h2 className="text-2xl font-bold text-white">Edit Disease</h2>
+        <div className="adl-modal-backdrop" onClick={handleCloseModal}>
+          <div className="adl-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="adl-modal-header">
+              <div className="adl-modal-header-left">
+                <div className="adl-modal-header-ico">
+                  <svg width="18" height="18" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 </div>
-                <button
-                  onClick={handleCloseModal}
-                  className="text-white hover:bg-white/20 rounded-lg p-2 transition"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+                <h2 className="adl-modal-h2">Edit Disease</h2>
               </div>
+              <button className="adl-modal-close" onClick={handleCloseModal}>
+                <svg width="16" height="16" fill="none" stroke="white" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
 
-              {/* Modal Body - Scrollable */}
-              <div className="overflow-y-auto max-h-[calc(90vh-140px)] px-6 py-6">
-                <div className="space-y-6">
-                  {/* Disease Name */}
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Disease Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={editFormData.name}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-                      placeholder="Enter disease name"
-                    />
-                  </div>
-
-                  {/* Description */}
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Description
-                    </label>
-                    <textarea
-                      name="description"
-                      value={editFormData.description}
-                      onChange={handleInputChange}
-                      rows={4}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition resize-none"
-                      placeholder="Brief overview of the disease"
-                    />
-                  </div>
-
-                  {/* Grid Layout for Other Fields */}
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {/* Etiology */}
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Etiology
-                      </label>
-                      <textarea
-                        name="etiology"
-                        value={editFormData.etiology}
-                        onChange={handleInputChange}
-                        rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition resize-none"
-                        placeholder="Causes and origin"
-                      />
-                    </div>
-
-                    {/* Pathophysiology */}
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Pathophysiology
-                      </label>
-                      <textarea
-                        name="pathophysiology"
-                        value={editFormData.pathophysiology}
-                        onChange={handleInputChange}
-                        rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition resize-none"
-                        placeholder="Disease mechanism"
-                      />
-                    </div>
-
-                    {/* Clinical Features */}
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Clinical Features
-                      </label>
-                      <textarea
-                        name="clinicalFeatures"
-                        value={editFormData.clinicalFeatures}
-                        onChange={handleInputChange}
-                        rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition resize-none"
-                        placeholder="Signs and symptoms"
-                      />
-                    </div>
-
-                    {/* Diagnosis */}
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Diagnosis
-                      </label>
-                      <textarea
-                        name="diagnosis"
-                        value={editFormData.diagnosis}
-                        onChange={handleInputChange}
-                        rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition resize-none"
-                        placeholder="Diagnostic methods"
-                      />
-                    </div>
-
-                    {/* Treatment */}
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Treatment
-                      </label>
-                      <textarea
-                        name="treatment"
-                        value={editFormData.treatment}
-                        onChange={handleInputChange}
-                        rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition resize-none"
-                        placeholder="Treatment options"
-                      />
-                    </div>
-
-                    {/* Complications */}
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Complications
-                      </label>
-                      <textarea
-                        name="complications"
-                        value={editFormData.complications}
-                        onChange={handleInputChange}
-                        rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition resize-none"
-                        placeholder="Potential complications"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Prognosis - Full Width */}
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Prognosis
-                    </label>
-                    <textarea
-                      name="prognosis"
-                      value={editFormData.prognosis}
-                      onChange={handleInputChange}
-                      rows={4}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition resize-none"
-                      placeholder="Expected outcome"
-                    />
-                  </div>
-                </div>
+            <div className="adl-modal-body">
+              <div className="adl-modal-field">
+                <label className="adl-modal-label">Disease Name <span className="adl-modal-req">*</span></label>
+                <input type="text" name="name" value={editFormData.name} onChange={handleInputChange} required className="adl-modal-input" placeholder="Enter disease name" />
               </div>
-
-              {/* Modal Footer */}
-              <div className="sticky bottom-0 bg-gray-50 px-6 py-4 flex items-center justify-end gap-3 border-t border-gray-200">
-                <button
-                  type="button"
-                  onClick={handleCloseModal}
-                  disabled={isSubmitting}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition font-semibold disabled:opacity-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleEditSubmit}
-                  disabled={isSubmitting || !editFormData.name.trim()}
-                  className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Updating...
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Update Disease
-                    </>
-                  )}
-                </button>
+              <div className="adl-modal-field">
+                <label className="adl-modal-label">Description</label>
+                <textarea name="description" value={editFormData.description} onChange={handleInputChange} rows={4} className="adl-modal-textarea" placeholder="Brief overview of the disease" />
               </div>
+              <div className="adl-modal-grid">
+                {FIELDS.map(({ name, label, placeholder }) => (
+                  <div key={name} className="adl-modal-field">
+                    <label className="adl-modal-label">{label}</label>
+                    <textarea name={name} value={editFormData[name]} onChange={handleInputChange} rows={4} className="adl-modal-textarea" placeholder={placeholder} />
+                  </div>
+                ))}
+              </div>
+              <div className="adl-modal-field" style={{ marginBottom: 0 }}>
+                <label className="adl-modal-label">Prognosis</label>
+                <textarea name="prognosis" value={editFormData.prognosis} onChange={handleInputChange} rows={4} className="adl-modal-textarea" placeholder="Expected outcome" />
+              </div>
+            </div>
+
+            <div className="adl-modal-footer">
+              <button type="button" onClick={handleCloseModal} disabled={isSubmitting} className="adl-modal-cancel">Cancel</button>
+              <button onClick={handleEditSubmit} disabled={isSubmitting || !editFormData.name.trim()} className="adl-modal-submit">
+                {isSubmitting ? (
+                  <><div className="adl-modal-spinner" />Updating...</>
+                ) : (
+                  <><svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>Update Disease</>
+                )}
+              </button>
             </div>
           </div>
         </div>
       )}
-    </div>
-  );
-};
-
-/* ===== REUSABLE SECTION COMPONENT ===== */
-const Section = ({ icon, title, value, color }) => {
-  const colorClasses = {
-    blue: "border-blue-500 bg-blue-50",
-    purple: "border-purple-500 bg-purple-50",
-    pink: "border-pink-500 bg-pink-50",
-    teal: "border-teal-500 bg-teal-50",
-    cyan: "border-cyan-500 bg-cyan-50",
-    green: "border-green-500 bg-green-50",
-    orange: "border-orange-500 bg-orange-50",
-    indigo: "border-indigo-500 bg-indigo-50",
-  };
-
-  return (
-    <div className={`${colorClasses[color]} border-l-4 rounded-lg p-4 shadow-sm`}>
-      <h3 className="flex items-center gap-2 font-bold text-gray-900 mb-2">
-        <span className="text-xl">{icon}</span>
-        {title}
-      </h3>
-      <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
-        {value || "No information available"}
-      </p>
     </div>
   );
 };
